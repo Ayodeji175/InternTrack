@@ -1,4 +1,11 @@
-applications = []
+import json
+
+try:
+    with open("application.json", "r") as file:
+        applications = json.load(file)
+except FileNotFoundError:
+    applications = []
+
 
 
 
@@ -32,6 +39,8 @@ while True:
             """
         )
         applications.append(intern_track_dict)
+        with open("application.json", "w") as file:
+            json.dump(applications, file, indent=4)
         # print(applications)
     
     elif choice == "2":
@@ -47,7 +56,6 @@ while True:
                           Position: {application["position"]}
                           Status: {application["status"]}
                 """)    
-        print("View Application")
     elif choice == "3":
         print("Exit") 
         break   
