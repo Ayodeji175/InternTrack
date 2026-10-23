@@ -4,7 +4,8 @@ def load_applications():
     try:
         with open("application.json", "r") as file:
             applications = json.load(file)
-    except FileNotFoundError:
+
+    except (FileNotFoundError, json.JSONDecodeError):
         applications = []
 
     return applications
@@ -16,7 +17,7 @@ def save_applications(applications):
 def add_application(applications):
     company_name = input("Company Name: ")
     position = input("Position: ")
-    status = input("Status: ")
+    status = get_valid_status()
 
     intern_track_dict = {
         "company_name": company_name,
@@ -72,9 +73,22 @@ def update_application(applications):
 
                     """)
 
-            new_company_name = input("Enter new Company Name: ")
-            new_position = input("Enter new Position: ")
-            new_status = input("Enter new Status: ")
+            new_company_name = input(
+                f'Enter new Company Name [{applications[index]["company_name"]}]: '
+            ).strip()
+
+            if new_company_name == "":
+                new_company_name = applications[index]["company_name"]
+
+            new_position = input(
+                f'Enter new Position [{applications[index]["position"]}]: '
+            ).strip()
+
+            if new_position == "":
+                new_position = applications[index]["position"]
+
+            
+            new_status = get_valid_status(applications[index]["status"])
 
             applications[index]["company_name"] = new_company_name
             applications[index]["position"] = new_position
@@ -126,7 +140,27 @@ Status: {applications[index]["status"]}
     except ValueError:
         print("Please enter a valid number.")
 
-applications = load_applications()
+
+def get_valid_status(current_status=None):
+    statuses = ["Applied", "Interview", "Rejected", "Offer"]
+
+    print("Valid statuses: Applied, Interview, Rejected, Offer")
+
+    while True:
+        if current_status is None:
+            status = input("Status: ").strip().title()
+        else:
+            status = input(f"Status [{current_status}]: ").strip().title()
+
+            if status == "":
+                return current_status
+
+        if status in statuses:
+            return status
+
+        print("Invalid status. Please try again.")
+
+applications = load_applications()        
 
 while True:
     print( """
