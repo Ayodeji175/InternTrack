@@ -140,6 +140,54 @@ Status: {applications[index]["status"]}
     except ValueError:
         print("Please enter a valid number.")
 
+def search_applications(applications):
+    if len(applications) == 0:
+        print("No application found.")
+        return
+
+    search_term = input("Enter company name to search: ").strip().lower()
+
+    if search_term == "":
+        print("Please enter a company name.")
+        return
+
+    found = False
+
+    for application in applications:
+        company_name = application["company_name"].lower()
+
+        if search_term in company_name:
+            print(f"""
+Company Name: {application["company_name"]}
+Position: {application["position"]}
+Status: {application["status"]}
+""")
+            found = True
+
+    if not found:
+        print("No matching application found.")
+
+def filter_by_status(applications):
+    if len(applications) == 0:
+        print("No application found.")
+        return
+
+    status = get_valid_status()
+
+    found = False
+
+    for application in applications:
+        if application["status"] == status:
+            print(f"""
+Company Name: {application["company_name"]}
+Position: {application["position"]}
+Status: {application["status"]}
+""")
+            found = True
+
+    if not found:
+        print(f"No applications found with status: {status}")
+
 
 def get_valid_status(current_status=None):
     statuses = ["Applied", "Interview", "Rejected", "Offer"]
@@ -171,7 +219,9 @@ while True:
         2. View Application
         3. Update Application
         4. Delete Application
-        5. Exit
+        5. Search Application
+        6. Filter by Status
+        7. Exit
     """)
 
     choice = input("Enter your choice:  ")
@@ -189,8 +239,14 @@ while True:
         delete_application(applications)
 
     elif choice == "5":
-        print("Exit") 
-        break   
+        search_applications(applications)
+
+    elif choice == "6":
+        filter_by_status(applications)
+
+    elif choice == "7":
+        print("Exit")
+        break       
     else: 
         print('Invalid choice, Please try again')
         
